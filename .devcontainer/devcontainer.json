@@ -1,0 +1,16 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+	"name": "Azure CLI",
+	"dockerFile": "Dockerfile",
+
+	"forwardPorts": [],
+	"extensions": [
+		"davidanson.vscode-markdownlint",
+		"gruntfuggly.todo-tree",
+		"ms-azuretools.vscode-docker",
+		"humao.rest-client"
+	],
+// Run Bash script in .devcontainer directory
+"postCreateCommand": "/bin/bash .devcontainer/post-install.sh"
+	
+}
