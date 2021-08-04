@@ -25,5 +25,5 @@ ENV DEBIAN_FRONTEND=dialog
 # install selected components
 # many scripts take optional parameters
 # see the script header for details of each
-RUN echo "👋 Welcome to your devcontainer for construction sets! You are on a custom image defined in your devcontainer.json file.\n" > /usr/local/etc/vscode-dev-containers/first-run-notice.txt 
+RUN echo "👋 Welcome to your devcontainer for construction sets! You are on a custom image defined in your  devcontainer.json file.\n" > /usr/local/etc/vscode-dev-containers/first-run-notice.txt 
 
