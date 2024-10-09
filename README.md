@@ -53,7 +53,7 @@ For details about how the app works, check out the [Deep Dive on Fib Calculator 
 
 ## Deployment Steps
 
-Start by deploying an AKS cluster. Yo
+Start by deploying an AKS cluster. 
 
 ``` bash
 LOCATION=eastus
@@ -90,7 +90,7 @@ Open your folder in VS code
 code fib-calculator/
 ```
 
-move to the proper folder
+move to the proper folder within your Visual Studio Code or whatever IDE you are using.
 
 ```
 cd complex
@@ -104,9 +104,11 @@ docker-compose up
 
 If you inspect the `complex\docker-compose.yaml` file, you'll see that i have created a local volume for the redis deployment using defaults and a customized volume for my worker service. This will allow you to make changes to your app code and test it locally dynamically. On the redis side, it will help persist your valuable calculations!
 
+To view your running app, open a browser and connect to `localhost:3050`. This is the port the Nginx proxy is running at and will route traffic based on path requested by the frontend application. To learn more about how this works, check out the [Deep Dive on Fib Calculator](#deep-dive-on-fib-calculator-app) section at the bottom. You can enter a number within the range provided and hit `Submit`. It will se tthe value to "Nothin yet" until the worker is able to finish processing the calculation and update redis with the value. You might have to refresh your browser to see the value after a few seconds as it does take some time to process large numbers.
+
 ## Running the app on AKS
 
-Next we will log into our AKS cluster and deploy the app to AKS. Since we are using the app routing addon, we dont need to deploy a nginx ingress controller, the addon has done this for us. 
+Next we will log into our AKS cluster and deploy the app to AKS. Since we are using the app routing addon, we dont need to deploy a nginx ingress controller, the addon has done this for us.
 
 ``` bash
 # Log into your AKS cluster
@@ -118,7 +120,7 @@ az aks get-credentials --resource-group $RGNAME --name $CLUSTERNAME
 enter the command below to create the secret
 
 ```
-kubectl create secret generic pgpassword --from-literal PGPASSWORD=12345ASDf
+kubectl create secret generic pgpassword --from-literal PGPASSWORD=postgres_password
 ```
 
 Note, this is a very bad way to store valuable secrets, we are only doing this for demo purposes and reinforce the fact that you should NEVER store database credentials in your deployment manifest files! More on this later. Store secrets in Azure Key vault instead and use the AKS [CSI driver for for Key vault](https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver) and [AKS workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet) to pull secrets securely.
@@ -140,7 +142,36 @@ repeat for all required services
 ### Deploy to k8s
 In this case, we will just follow a shortcut and use my images built in my dockerhub account.
 
+cd to the correct folder and deploy all files in the folder. NOTE: Make sure you have deployed the secret (as shown above) before running this deployment.
+
+```bash
+cd k8s
+```
+
+```bash
+kubectl apply -f .
+```
+
+Check out the running pods
+
+```bash
+kubectl get pods
+```
+
+You will notive that the redis pods have dterministic names, unlike the deployment pods. This is the beauty of stateful sets. The headless service deployed by `complex\k8s\redis-headless-service.yaml` allows us to specify a specific replica in our application. This means that we can use the endpoint to as an env variable in our apps to specify the replica to use as the "master" redis instance.
+
+### Test the app on your browser
+Get the IP address of your ingress controller service
+```bash
+kubectl get ingress
+```
+
+Open the IP address on your browser and you should be able to see your app running. Enter a few numbers within the range specified on the web page. Try a combination of low and high numbers. You will see the high numbers take a long time to process and display as "Nothing yet". If you give it a few seconds and refresh your browser, you will see the result displayed. You will also notice that no matter how many times you refresh your browser, you see the same set of numbers. This is because even though the server pulls data from redis to render on the front end, all redis instances are using the same underlying persistent volume in Azure files.
+
+
+
 #### Ingress
+
 App routing addon for AKS allows us to use nginx based ingress controller in our cluster. All services we will be deploying are of type ClusterIp which means they can only be accessed externally using an ingress controller. Taking a look at the `complex\k8s\ingress-service.yaml` file, you' find that I have two paths specified. All paths that start with `/api` will go to the `server-service` but only after the target has been written (by removing the `/api`) since our servier is not listening at `/api`. Pretty useful feature. The `nginx.ingress.kubernetes.io/rewrite-target: /$1` and `nginx.ingress.kubernetes.io/use-regex: 'true'` make this possible.
 
 #### Server Service and Deployment

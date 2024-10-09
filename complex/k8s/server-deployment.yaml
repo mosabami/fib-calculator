@@ -21,7 +21,7 @@ spec:
             - containerPort: 5000
           env:
             - name: UPPERLIMIT
-              value: '50'
+              value: '60'
             - name: REDIS_HOST
               value: redis-service
             - name: REDIS_HOST2
@@ -37,6 +37,7 @@ spec:
             - name: PGDATABASE
               value: postgres
             - name: PGPASSWORD
+              # value: postgres_password
               valueFrom: 
                 secretKeyRef: 
                   name: pgpassword
