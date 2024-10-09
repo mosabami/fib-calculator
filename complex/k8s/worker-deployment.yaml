@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: mosabami/multi-worker:v1
+          imagePullPolicy: Always
+          env:
+            - name: REDIS_HOST
+              value: redis-service
+            - name: REDIS_HOST2
+              value: redis-statefulset-0.redis-headless
+            - name: REDIS_PORT
+              value: '6379'
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

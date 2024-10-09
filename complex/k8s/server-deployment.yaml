@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata: 
+  name: server-deployment
+spec:
+  selector:
+    matchLabels:
+      component: server
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: mosabami/multi-server:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: UPPERLIMIT
+              value: '50'
+            - name: REDIS_HOST
+              value: redis-service
+            - name: REDIS_HOST2
+              value: redis-statefulset-0.redis-headless
+            - name: REDIS_PORT
+              value: '6379'
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: postgres-service
+            - name: PGPORT
+              value: '5432'
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom: 
+                secretKeyRef: 
+                  name: pgpassword
+                  key: PGPASSWORD
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-statefulset
+spec:
+  serviceName: "redis-headless"
+  replicas: 3
+  selector:
+    matchLabels:
+      component: redis
+  template:
+    metadata:
+      labels:
+        component: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: shared-redis-pvc
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: redis-data
+  #   spec:
+  #     accessModes: [ "ReadWriteMany" ]
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
+  #     storageClassName: azurefile-premium-sc # Use the storage class name here

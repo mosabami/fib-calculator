@@ -1,0 +1,50 @@
+/* Fib.css */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container label {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.form-container input {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.form-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Space between input and button */
+  margin-left: 10px; /* Add this line for left margin */
+  margin-right: 10px; /* Add this line for right margin */
+  align-self: stretch; /* Ensure the button takes the full width */
+}
+
+.form-container button:hover {
+  background-color: #0056b3;
+}
+
+.indexes, .values {
+  margin: 20px 0;
+  text-align: center;
+}

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels: 
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: mosabami/multi-client:v1
+          ports: 
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "300m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          env:
+            - name: REACT_APP_UPPERLIMIT
+              value: '60'
