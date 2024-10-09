@@ -47,7 +47,7 @@ One key feature of statefulSets is that **it makes it easy to have a spearate pe
 
 In this lab, we won't be using this replica to unique storage area feature, because we want our worker to always check the same underlying redis storage to see if the number has already been calculated before running the calculation to save on compute cost. If we use StatefulSets the way its supposed to be used, ie each replica having its own PVC, our workers will be reading redis data from different storage locations, and consequently recalculating items that might already have been calculated in the past and stored in a different redis instance. Instead, we will use Azure file's read-write many feature so all replacas of our StatefulSet share the same underlying data, I will also show, in the statefulset definition file in comment, how you can make it so that each instance has its own persistent volume. We will however be using the StatefulSet feaure that allows us to specify a unique pod (a 'master' redis pod) that will be responsble for all insert operations.
 
-In this exercise, we are using a single postgres pod deployed using a deployment with regular persistent volume claims. This is to simulate using a managed postgres service. For production workloads, use Azure managed services to store your data. The postgres database in this case will be used to store all user entries whether or not they are repeated, because, why not?
+In this exercise, we are using a single postgres pod deployed using a deployment with regular persistent volume claims. This is to simulate using a managed postgres service. For production workloads, use Azure managed services to store your data. The postgres database in this case will be used to store all user entries whether or not they are repeated.
 
 For details about how the app works, check out the [Deep Dive on Fib Calculator section](#deep-dive-on-fib-calculator-app) at the bottom for more information.
 
@@ -158,7 +158,13 @@ You will also notice that this pod doesn't have a service. This is because it is
 We are simulating the use of a managed Postgres service by simplifying our depoyment process and deploying 1 replica of PostGres pod and giving it a persistent volume to help persist data incase the pod dies. We are also using the same secret to set its password. This deploymet is using the `complex\k8s\postgres-persistent-volume-claim.yaml`. Check it out for more information on how that works.
 
 #### Redis StatefulSet
-**This sectin will be updated soon**
+
+**This section will be updated soon**
 
 ## Deep Dive on Fib Calculator App
+
+**This section will be updated soon**
+
+### docker-compose File
+
 **This section will be updated soon**
