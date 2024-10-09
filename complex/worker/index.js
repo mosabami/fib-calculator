@@ -65,6 +65,7 @@ const fib = async (index) => {
 
 const computeFib = (index) => {
   if (index < 2) return 1;
+  // return 1
   return computeFib(index - 1) + computeFib(index - 2);
 };
 
